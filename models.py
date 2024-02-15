@@ -77,9 +77,9 @@ class Donations(db.Model):
     
     id= db.Column(db.Integer, primary_key=True)
     user_id= db.Column(db.Integer, db.ForeignKey("users.id"))
-    amount=db.Column(db.varchar, nullable=False)
-    date=db.Column(db.varchar, nullable=False)
-    purpose=db.Column(db.varchar, nullable=False)
+    amount=db.Column(db.String, nullable=False)
+    date=db.Column(db.DateTime, nullable=False)
+    purpose=db.Column(db.String, nullable=False)
     
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
