@@ -11,15 +11,15 @@ resource_fields = {
 }
 
 class Feedback(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('feedback_text', type=str, help='feedback_text is required', required=True)
-    parser.add_argument('feedback_type', type=str, help='feedback_type is required', required=True)
-    args = parser.parse_args()
-
     #user fills a form(post)
     def post(self):
-        data = Feedback.parser.parse_args()
-        feedback = FeedbackForm(**data)
+        parser = reqparse.RequestParser()
+        parser.add_argument('feedback_text', type=str, help='feedback_text is required', required=True)
+        parser.add_argument('feedback_type', type=str, help='feedback_type is required', required=True)
+        parser.add_argument('user_id', type=int, help='feedback_type is required', required=True)
+        args = parser.parse_args()
+        
+        feedback = FeedbackForm(**args)
 
         try:
             db.session.add(feedback)
@@ -28,13 +28,15 @@ class Feedback(Resource):
         except:
             abort(500, error="Creation unsuccessful")
 
-    @marshal_with(resource_fields)
     def get(self, id=None):
         if id:
-            feedback = FeedbackForm.query.get(id)
+            feedback = FeedbackForm.query.filter(FeedbackForm.id == id).first()
+            
+            if not feedback:
+                return {"message":"Feedback not found"},404
 
             return feedback
         else:
-            feedback = FeedbackForm.query.all()
+            feedback = [feed.to_dict() for feed in FeedbackForm.query.all()]
 
             return feedback
