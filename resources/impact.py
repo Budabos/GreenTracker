@@ -1,19 +1,6 @@
 # Import necessary modules
 from flask_restful import Resource, reqparse, fields
-from models import db, Impact_MonitoringsModel
-
-# This dictionary defines the fields associated with an Impact_Monitorings resource.
-Impact_Monitorings_fields = {
-    "id": fields.Integer,
-    "user_id": fields.Integer,
-    "action_taken": fields.String,
-    "carbon_footprint": fields.String,
-    "created_at": fields.String
-}
-
-# Import necessary modules
-from flask_restful import Resource, reqparse, fields
-from models import db, Impact_MonitoringsModel
+from models import db, Impact_Monitorings
 
 # This dictionary defines the fields associated with an Impact_Monitorings resource.
 Impact_Monitorings_fields = {
@@ -39,7 +26,7 @@ class ImpactMonitorings(Resource):
         args = self.impact_monitorings_parser.parse_args()
 
         # Create a new instance of Impact_MonitoringsModel with parsed arguments
-        new_impact_monitoring = Impact_MonitoringsModel(
+        new_impact_monitoring = Impact_Monitorings(
             user_id=args["user_id"],
             action_taken=args["action_taken"],
             carbon_footprint=args["carbon_footprint"],
