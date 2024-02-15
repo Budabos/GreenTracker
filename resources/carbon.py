@@ -1,6 +1,6 @@
 # Import necessary modules
 from flask_restful import Resource, reqparse,fields
-from models import db, CarbonFootPrintCountModel
+from models import db, CarbonFootPrintCount
 
 # Define fields for CarbonFootPrintCount
 CarbonFootPrintCount_fields = {
@@ -11,7 +11,7 @@ CarbonFootPrintCount_fields = {
 }
 
 # Define a class named CarbonFootPrintCount that inherits from Resource
-class CarbonFootPrintCount(Resource):
+class CarbonFootprintCalculation(Resource):
     # Initialize a request parser to parse incoming request data
     carbon_footprint_parser = reqparse.RequestParser()
 
@@ -26,7 +26,7 @@ class CarbonFootPrintCount(Resource):
         args = self.carbon_footprint_parser.parse_args()
 
         # Create a new instance of CarbonFootPrintCountModel with parsed arguments
-        new_footprint = CarbonFootPrintCountModel(
+        new_footprint = CarbonFootPrintCount(
             user_id=args['user_id'],
             carbon_value=args['carbon_value'],
             date=args.get('date')
@@ -45,6 +45,9 @@ class CarbonFootPrintCount(Resource):
             # If there's an error, rollback changes and return an error message with status code 500
             db.session.rollback()
             return {'error': 'An error occurred while creating carbon footprint count'}, 500
+            return {'error': 'An error occurred while creating carbon footprint count'}, 500 
+        
+   
 
     # Define a get method to handle GET requests for retrieving a specific footprint
     def get(self, footprint_id):
