@@ -25,7 +25,7 @@ class Reviews(db.Model):
     date_posted = db.Column(db.DateTime, server_default=db.func.now())
     
     
-class Users(db.Model):
+class Users(db.Model, SerializerMixin):
     __tablename__ ="users"
     
     id= db.Column(db.Integer, primary_key=True)
