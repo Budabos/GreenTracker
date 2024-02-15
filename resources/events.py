@@ -2,6 +2,7 @@ from flask import request
 from flask_restful import Resource
 from models import db, Events
 
+
 class EventsResource(Resource):
     def get(self):
         events = Events.query.all()

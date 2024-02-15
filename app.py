@@ -8,6 +8,8 @@ from resources.user import UserAccounts
 from resources.events import Events
 from resources.partners import Partners
 
+api= Api(app)
+
 # Add resources to the API
 api.add_resource(EduResource, '/education-resources')
 api.add_resource(UserAccounts, '/users')
