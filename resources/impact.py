@@ -18,7 +18,6 @@ class ImpactMonitorings(Resource):
     impact_monitorings_parser.add_argument("user_id", type=int, required=True, help="User ID is required")
     impact_monitorings_parser.add_argument("action_taken", type=str, required=True, help="Action taken is required")
     impact_monitorings_parser.add_argument("carbon_footprint", type=str, required=True, help="Carbon footprint is required")
-    impact_monitorings_parser.add_argument("created_at", type=str, required=True, help="Time Created at is required")
 
     # POST method to handle creating new ImpactMonitorings instances
     def post(self):
@@ -30,7 +29,6 @@ class ImpactMonitorings(Resource):
             user_id=args["user_id"],
             action_taken=args["action_taken"],
             carbon_footprint=args["carbon_footprint"],
-            created_at=args["created_at"]
         )
 
         try:
