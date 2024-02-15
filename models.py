@@ -1,6 +1,7 @@
 from config import db
+from sqlalchemy_serializer import SerializerMixin
 
-class Education_Resources(db.Model):
+class Education_Resources(db.Model, SerializerMixin):
     __tablename__ = 'educational_resources'
     
     id = db.Column(db.Integer, primary_key=True)
