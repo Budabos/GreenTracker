@@ -28,6 +28,8 @@ class Reviews(db.Model):
 class Users(db.Model, SerializerMixin):
     __tablename__ ="users"
     
+    serialize_rules = ('-password',)
+    
     id= db.Column(db.Integer, primary_key=True)
     first_name=db.Column(db.String, nullable=False)
     last_name=db.Column(db.String, nullable=False)
