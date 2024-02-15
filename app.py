@@ -2,7 +2,7 @@ from flask import Flask
 from flask_restful import Api
 from resources.impact import ImpactMonitorings
 from resources.carbon import CarbonFootprintCalculation
-from config import app, Api, bcrypt
+from config import app, api
 from resources.edu_resources import EduResource
 from resources.user import UserAccounts
 from resources.events import Events

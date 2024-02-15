@@ -18,7 +18,6 @@ class CarbonFootprintCalculation(Resource):
     # Define the arguments expected in the request
     carbon_footprint_parser.add_argument('user_id', type=int, required=True, help='User ID is required')
     carbon_footprint_parser.add_argument('carbon_value', type=str, required=True, help='Carbon value is required')
-    carbon_footprint_parser.add_argument('date', type=str)
 
     # Define a post method to handle POST requests
     def post(self):
@@ -29,7 +28,6 @@ class CarbonFootprintCalculation(Resource):
         new_footprint = CarbonFootPrintCount(
             user_id=args['user_id'],
             carbon_value=args['carbon_value'],
-            date=args.get('date')
         )
 
         try:
@@ -52,7 +50,7 @@ class CarbonFootprintCalculation(Resource):
     # Define a get method to handle GET requests for retrieving a specific footprint
     def get(self, footprint_id):
         # Retrieve the carbon footprint record from the database by its ID
-        footprint = CarbonFootPrintCountModel.query.get(footprint_id)
+        footprint = CarbonFootPrintCount.query.get(footprint_id)
         if footprint:
             # If the footprint exists, return its details
             return {'user_id': footprint.user_id, 'carbon_value': footprint.carbon_value, 'date': footprint.date}
@@ -65,7 +63,7 @@ class CarbonFootprintCalculation(Resource):
         # Parse the request arguments to extract user input
         args = self.carbon_footprint_parser.parse_args()
         # Retrieve the carbon footprint record from the database by its ID
-        footprint = CarbonFootPrintCountModel.query.get(footprint_id)
+        footprint = CarbonFootPrintCount.query.get(footprint_id)
         if footprint:
             # If the footprint exists, update its attributes with the provided values
             footprint.user_id = args['user_id']
@@ -82,7 +80,7 @@ class CarbonFootprintCalculation(Resource):
     # Define a delete method to handle DELETE requests for deleting a specific footprint
     def delete(self, footprint_id):
         # Retrieve the carbon footprint record from the database by its ID
-        footprint = CarbonFootPrintCountModel.query.get(footprint_id)
+        footprint = CarbonFootPrintCount.query.get(footprint_id)
         if footprint:
             # If the footprint exists, delete it from the database
             db.session.delete(footprint)
