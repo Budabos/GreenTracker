@@ -11,6 +11,8 @@ api.add_resource(EduResource, '/education-resources')
 api.add_resource(UserAccounts, '/users')
 api.add_resource(ImpactMonitorings, '/impact_monitorings')
 api.add_resource(CarbonFootprintCalculation, '/calculate_footprint')
+api.add_resource(Events, '/events')
+api.add_resource(Partners, '/partners')
 
 
 
