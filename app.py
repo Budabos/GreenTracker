@@ -2,9 +2,11 @@ from flask import Flask
 from flask_restful import Api
 from resources.impact import ImpactMonitorings
 from resources.carbon import CarbonFootprintCalculation
-from config import app, api, bcrypt
+from config import app, Api, bcrypt
 from resources.edu_resources import EduResource
 from resources.user import UserAccounts
+from resources.events import Events
+from resources.partners import Partners
 
 # Add resources to the API
 api.add_resource(EduResource, '/education-resources')

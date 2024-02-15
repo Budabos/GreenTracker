@@ -23,8 +23,4 @@ class PartnerResource(Resource):
 
         return {'message': 'Partner Request created successfully'}, 201
 
-api.add_resource(PartnerResource, '/partners')
 
-if __name__ == '__main__':
-    db.create_all()
-    app.run(debug=True)
