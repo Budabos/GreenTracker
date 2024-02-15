@@ -1,4 +1,4 @@
-from flask_restful import Resource, fields, marshal, reqparse 
+from flask_restful import Resource, fields, reqparse 
 from models import Donations, db
 from datetime import datetime
 
@@ -31,7 +31,7 @@ def post(self):
         return {"message":"Donation not created"}
     
 
-def patch(self,id)
+def patch(self,id):
     data = DonationsResource.parser.parser_args
 
     donation = Donations.query.get(id)
