@@ -1,21 +1,43 @@
 from flask import request
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 from models import db, Events
 
+def serialize_event(event):
+      return {
+          'id': event.id,
+          'title': event.title,
+          'description': event.description,
+          'location': event.location,
+          'date_event': event.date_event.isoformat(),
+          'organizer': event.organizer,
+          'contact_info': event.contact_info,
+          'registration_deadline': event.registration_deadline.isoformat() if event.registration_deadline else None
+      }
 
 class EventsResource(Resource):
+    parser = reqparse.RequestParser()
+        
+    parser.add_argument('title', type=str, required=True, help='Title is required')
+    parser.add_argument('description', type=str, required=True, help='Description is required')
+    parser.add_argument('location', type=str, required=True, help='Category is required')
+    parser.add_argument('date_event', required=True, help='Content is required')
+    parser.add_argument('organizer', type=str, required=True, help='Author is required')
+    parser.add_argument('contact_info', type=str, required=True, help='Author is required')
+    parser.add_argument('registration_deadline', required=True, help='Date published is required')
+        
     def get(self):
         events = Events.query.all()
-        serialized_events = [self._serialize_event(event) for event in events]
+        serialized_events = [serialize_event(event) for event in events]
         return serialized_events, 200
 
     def post(self):
-        data = request.get_json()
+        data = self.parser.parse_args()
         new_event = Events(**data)
         db.session.add(new_event)
         db.session.commit()
-        return self._serialize_event(new_event), 201
-
+        return serialize_event(new_event), 201
+    
+class EventsResourceById(Resource):
     def patch(self, event_id):
         event = Events.query.get_or_404(event_id)
         data = request.get_json() or {}
@@ -25,7 +47,7 @@ class EventsResource(Resource):
                 setattr(event, field, data[field])
 
         db.session.commit()
-        return self._serialize_event(event)
+        return serialize_event(event)
 
     def delete(self, event_id):
         event = Events.query.get_or_404(event_id)
@@ -33,14 +55,4 @@ class EventsResource(Resource):
         db.session.commit()
         return '', 204
 
-    def _serialize_event(self, event):
-        return {
-            'id': event.id,
-            'title': event.title,
-            'description': event.description,
-            'location': event.location,
-            'date_event': event.date_event.isoformat(),
-            'organizer': event.organizer,
-            'contact_info': event.contact_info,
-            'registration_deadline': event.registration_deadline.isoformat() if event.registration_deadline else None
-        }
+  
