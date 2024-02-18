@@ -10,7 +10,8 @@ from resources.feedback import Feedback
 from resources.userEvent import User_Event
 from resources.trackgoals import TrackGoalsResource
 from resources.donations import DonationsResource, DonationsResourceById
-
+# from resources.products import ProductsResource
+# from resources.review import   Review
 
 # Add resources to the API
 api.add_resource(EduResource, '/education-resources')
@@ -31,6 +32,8 @@ api.add_resource(TrackGoalsResource, '/track_goals','/track_goals/<int:id>')
 
 api.add_resource(DonationsResource, '/donations')
 api.add_resource(DonationsResourceById,'/donations/<int:id>')
+# api.add_resource(ProductsResource, '/products')
+# api.add_resource(Review, '/reviews')
 
 
 if __name__ == '__main__':
