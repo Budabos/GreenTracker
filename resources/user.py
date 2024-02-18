@@ -45,10 +45,16 @@ class SignUp(Resource):
         new_user = Users(**args)
         db.session.add(new_user)
         db.session.commit()
-        # print(check_password_hash(args['password'], 'password123'))
+        
+        #Generate token and return user dict
+        access_token = create_access_token(identity=new_user.id)
+        refresh_token = create_refresh_token(identity=new_user.id)
         
         return {
-            "message":"User created successfully"
+            "message":"User created successfully",
+            "access_token":access_token,
+            "refresh_token":refresh_token,
+            "user":new_user.to_dict()
         },201
         
 class Login(Resource):
