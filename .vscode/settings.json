@@ -10,5 +10,6 @@
       "name": "greentracker",
       "connectString": "postgres://greentracker_user:UtvFWi3eGRPWuVluquJFg7ZQVtvxriEH@dpg-cn6qrtljm4es73bo21pg-a.frankfurt-postgres.render.com/greentracker"
     }
-  ]
+  ],
+  "python.analysis.autoImportCompletions": true
 }
