@@ -4,8 +4,8 @@ from config import app, db
 from models import Products
 
 @app.route('/products', methods=['GET'])
-def get_products():a
-    products = Products.queraay.all()
+def get_products():
+    products = Products.query.all()
     output = []
     for product in products:
         product_data = {
