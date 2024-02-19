@@ -4,8 +4,8 @@ from config import app, db
 from models import Products
 
 @app.route('/products', methods=['GET'])
-def get_products():a
-    products = Products.queraay.all()
+def get_products():
+    products = Products.query.all()
     output = []
     for product in products:
         product_data = {
@@ -13,10 +13,9 @@ def get_products():a
             'name': product.name,
             'description': product.description,
             'category': product.category,
-            'brand': product.brand,
             'price': product.price,
             'eco_rating': product.eco_rating,
-            'manufacturer_link': product.manufacturer_link,
+            'image_url': product.image_url,
             'created_at': product.created_at
         }
         output.append(product_data)
@@ -30,10 +29,9 @@ def get_product(product_id):
         'name': product.name,
         'description': product.description,
         'category': product.category,
-        'brand': product.brand,
         'price': product.price,
         'eco_rating': product.eco_rating,
-        'manufacturer_link': product.manufacturer_link,
+        'image_url': product.image_url,
         'created_at': product.created_at
     }
     return jsonify(product_data)
