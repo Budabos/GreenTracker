@@ -14,9 +14,9 @@ class Feedback(Resource):
     #user fills a form(post)
     def post(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('feedback_text', type=str, help='feedback_text is required', required=True)
-        parser.add_argument('feedback_type', type=str, help='feedback_type is required', required=True)
-        parser.add_argument('user_id', type=int, help='feedback_type is required', required=True)
+        parser.add_argument('name', type=str, help='name is required', required=True)
+        parser.add_argument('email', type=str, help='email is required', required=True)
+        parser.add_argument('feedback_message', type=str, help='feedback_message is required', required=True)
         args = parser.parse_args()
         
         feedback = FeedbackForm(**args)

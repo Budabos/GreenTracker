@@ -54,7 +54,6 @@ class SignUp(Resource):
             "message":"User created successfully",
             "access_token":access_token,
             "refresh_token":refresh_token,
-            "user":new_user.to_dict()
         },201
         
 class Login(Resource):
