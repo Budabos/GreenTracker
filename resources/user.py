@@ -26,7 +26,7 @@ class SignUp(Resource):
         parser.add_argument('phone', type=str, required=True, help='Phone number is required')
         parser.add_argument('password', type=str, required=True, help='Password is required')
         parser.add_argument('gender', type=str, required=True, help='Gender is required')
-        parser.add_argument('status', required=True, help='Status is required')
+        parser.add_argument('image_url')
         parser.add_argument('role', required=True, help='Role is required')
         parser.add_argument('interests', required=True, help='Interests is required')
         parser.add_argument('age', required=True, help='Age is required')

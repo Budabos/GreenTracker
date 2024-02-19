@@ -17,6 +17,7 @@ class EduResource(Resource):
         parser.add_argument('content', type=str, required=True, help='Content is required')
         parser.add_argument('author', type=str, required=True, help='Author is required')
         parser.add_argument('date_published', required=True, help='Date published is required')
+        parser.add_argument('image_url', required=True, type=str, help='Image url is required')
         
         
         args = parser.parse_args()

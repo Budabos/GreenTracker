@@ -13,10 +13,9 @@ def get_products():
             'name': product.name,
             'description': product.description,
             'category': product.category,
-            'brand': product.brand,
             'price': product.price,
             'eco_rating': product.eco_rating,
-            'manufacturer_link': product.manufacturer_link,
+            'image_url': product.image_url,
             'created_at': product.created_at
         }
         output.append(product_data)
@@ -30,10 +29,9 @@ def get_product(product_id):
         'name': product.name,
         'description': product.description,
         'category': product.category,
-        'brand': product.brand,
         'price': product.price,
         'eco_rating': product.eco_rating,
-        'manufacturer_link': product.manufacturer_link,
+        'image_url': product.image_url,
         'created_at': product.created_at
     }
     return jsonify(product_data)
