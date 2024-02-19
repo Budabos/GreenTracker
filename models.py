@@ -28,6 +28,8 @@ class Reviews(db.Model):
 class Users(db.Model, SerializerMixin):
     __tablename__ ="users"
     
+    serialize_rules = ('-password',)
+    
     id= db.Column(db.Integer, primary_key=True)
     first_name=db.Column(db.String, nullable=False)
     last_name=db.Column(db.String, nullable=False)
@@ -73,7 +75,7 @@ class Products(db.Model):
     manufacturer_link=db.Column(db.String, nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     
-class Donations(db.Model):
+class Donations(db.Model, SerializerMixin):
     __tablename__ ="donations"
     
     id= db.Column(db.Integer, primary_key=True)
@@ -85,7 +87,7 @@ class Donations(db.Model):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
 
-class Partners(db.Model):
+class Partners(db.Model, SerializerMixin):
     __tablename__ ="partners"
     
     id= db.Column(db.Integer, primary_key=True)
@@ -96,16 +98,20 @@ class Partners(db.Model):
     
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     
-class CarbonFootPrintCount(db.Model):
+class CarbonFootPrintCount(db.Model, SerializerMixin):
     __tablename__ ="carbon_footprint_counts"
+    
+    # serialize_rules = ('-user_id',)
     
     id= db.Column(db.Integer, primary_key=True)
     user_id= db.Column(db.Integer, db.ForeignKey("users.id"))
     carbon_value=db.Column(db.String, nullable=False)
     date = db.Column(db.DateTime, server_default=db.func.now())
 
-class Impact_Monitorings(db.Model):
+class Impact_Monitorings(db.Model, SerializerMixin):
     __tablename__ ="impact_monitorings"
+    
+    # serialize_rules = ('-user_id',)
     
     id= db.Column(db.Integer, primary_key=True)
     user_id= db.Column(db.Integer, db.ForeignKey("users.id"))
@@ -115,7 +121,7 @@ class Impact_Monitorings(db.Model):
     
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     
-class TrackGoals(db.Model):
+class TrackGoals(db.Model, SerializerMixin):
     __tablename__ ="track_goals"
     
     id= db.Column(db.Integer, primary_key=True)
@@ -143,8 +149,10 @@ class UserEvents(db.Model):
     
     date = db.Column(db.DateTime, server_default=db.func.now(), nullable=False)
     
-class FeedbackForm(db.Model):
+class FeedbackForm(db.Model, SerializerMixin):
     __tablename__ ="feedback_forms"
+    
+    # serialize_rules = ('-user_id',)
     
     id= db.Column(db.Integer, primary_key=True)
     user_id= db.Column(db.Integer, db.ForeignKey("users.id"))

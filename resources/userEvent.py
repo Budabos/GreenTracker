@@ -19,8 +19,6 @@ class User_Event(Resource):
                 abort(404,message='Event not found')
 
             return event
-    
-        
         else:
             events = UserEvents.query.all()
 
