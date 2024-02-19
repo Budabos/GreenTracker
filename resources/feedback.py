@@ -24,7 +24,7 @@ class Feedback(Resource):
         try:
             db.session.add(feedback)
             db.session.commit()
-            return {"message":"Form created successfully"}, 200
+            return {"message":"Feedback made successfully"}, 200
         except:
             abort(500, error="Creation unsuccessful")
 
