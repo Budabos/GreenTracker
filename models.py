@@ -155,7 +155,7 @@ class FeedbackForm(db.Model, SerializerMixin):
     # serialize_rules = ('-user_id',)
     
     id= db.Column(db.Integer, primary_key=True)
-    user_id= db.Column(db.Integer, db.ForeignKey("users.id"))
-    feedback_text = db.Column(db.String, nullable=False) 
-    feedback_type = db.Column(db.String, nullable=False) 
-    date = db.Column(db.DateTime, server_default=db.func.now(), nullable=False)
+    name = db.Column(db.String, nullable=False) 
+    email = db.Column(db.String, nullable=False) 
+    feedback_message = db.Column(db.String, nullable=False) 
+    created_at = db.Column(db.DateTime, server_default=db.func.now(), nullable=False)
