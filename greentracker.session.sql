@@ -1,3 +1,3 @@
-ALTER TABLE products
-ALTER COLUMN eco_rating TYPE INTEGER
-USING price::integer;
+ALTER TABLE reviews
+ALTER COLUMN rating TYPE INTEGER
+USING rating::integer;
