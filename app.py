@@ -11,6 +11,8 @@ from resources.userEvent import User_Event
 from resources.trackgoals import TrackGoalsResource
 from resources.donations import DonationsResource, DonationsResourceById
 from resources.review import   Reviews
+from resources.products import ProductResource, ProductResourceById
+
 
 # Add resources to the API
 api.add_resource(EduResource, '/education-resources')
@@ -27,6 +29,8 @@ api.add_resource(PartnerResource, '/partners')
 api.add_resource(Feedback, '/feedback', "/feedback/<int:id>")
 api.add_resource(User_Event, '/event_user')
 api.add_resource(TrackGoalsResource, '/track_goals','/track_goals/<int:id>')
+api.add_resource(ProductResource, '/products')
+api.add_resource(ProductResourceById, '/products/<int:id>')
 
 
 api.add_resource(DonationsResource, '/donations')

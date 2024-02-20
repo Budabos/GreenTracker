@@ -42,15 +42,15 @@ class Events(db.Model):
     
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
-class Products(db.Model):
+class Products(db.Model, SerializerMixin):
     __tablename__ ="products"
     
     id= db.Column(db.Integer, primary_key=True)
     name=db.Column(db.String, nullable=False)
     description=db.Column(db.String, nullable=False)
     category=db.Column(db.String, nullable=False)
-    price=db.Column(db.String, nullable=False)
-    eco_rating=db.Column(db.String, nullable=False)
+    price=db.Column(db.Integer, nullable=False)
+    eco_rating=db.Column(db.Integer, nullable=False)
     image_url=db.Column(db.String, nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     

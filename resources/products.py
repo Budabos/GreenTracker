@@ -2,73 +2,91 @@ from flask import request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from config import app, db
 from models import Products
+from flask_restful import Resource, reqparse
 
-@app.route('/products', methods=['GET'])
-def get_products():
-    products = Products.query.all()
-    output = []
-    for product in products:
-        product_data = {
-            'id': product.id,
-            'name': product.name,
-            'description': product.description,
-            'category': product.category,
-            'price': product.price,
-            'eco_rating': product.eco_rating,
-            'image_url': product.image_url,
-            'created_at': product.created_at
+class ProductResource(Resource):
+    def get(self):
+        products = [product.to_dict() for product in Products.query.all()]
+        return products,200
+    
+    def post(self):
+        parser = reqparse.RequestParser()
+        
+        parser.add_argument('name', type=str, required=True, help='Name is required')
+        parser.add_argument('description', type=str, required=True, help='Description is required')
+        parser.add_argument('category', type=str, required=True, help='Category is required')
+        parser.add_argument('price', type=int, required=True, help='Price is required')
+        parser.add_argument('eco_rating', type=str, required=True, help='Eco-rating is required')
+        parser.add_argument('image_url', required=True, type=str, help='Image url is required')
+        
+        
+        args = parser.parse_args()
+        
+        new_product = Products(**args)
+        db.session.add(new_product)
+        db.session.commit()
+        
+        return {
+            "message":"Product added successfully"
         }
-        output.append(product_data)
-    return jsonify({'products': output})
+        
+class ProductResourceById(Resource):
+    def get(self, id):
+        found_product = Products.query.filter(Products.id == id).first()
+        
+        if not found_product:
+            return {
+                "message":"Product not found"
+            },404
+            
+        return found_product.to_dict(),200
+    
+    def delete(self, id):
+        found_product = Products.query.filter(Products.id == id).first()
+        
+        if not found_product:
+            return {
+                "message":"Product not found"
+            },404
+            
+        db.session.delete(found_product)
+        db.session.commit()
+        
+        return {
+            "message":"Product deleted successfully"
+        },204
+        
+    def patch(self, id):
+        found_product = Products.query.filter(Products.id == id).first()
+        
+        if not found_product:
+            return {
+                "message": "Product not found"
+            }, 404
 
-@app.route('/products/<int:product_id>', methods=['GET'])
-def get_product(product_id):
-    product = Products.query.get_or_404(product_id)
-    product_data = {
-        'id': product.id,
-        'name': product.name,
-        'description': product.description,
-        'category': product.category,
-        'price': product.price,
-        'eco_rating': product.eco_rating,
-        'image_url': product.image_url,
-        'created_at': product.created_at
-    }
-    return jsonify(product_data)
-
-@app.route('/products', methods=['POST'])
-def add_product():
-    data = request.json
-    new_product = Products(
-        name=data['name'],
-        description=data['description'],
-        category=data['category'],
-        brand=data['brand'],
-        price=data['price'],
-        eco_rating=data['eco_rating'],
-        manufacturer_link=data['manufacturer_link']
-    )
-    db.session.add(new_product)
-    db.session.commit()
-    return jsonify({'message': 'Product added successfully'})
-
-@app.route('/products/<int:product_id>', methods=['PUT'])
-def update_product(product_id):
-    product = Products.query.get_or_404(product_id)
-    data = request.json
-    product.name = data['name']
-    product.description = data['description']
-    product.category = data['category']
-    product.brand = data['brand']
-    product.price = data['price']
-    product.eco_rating = data['eco_rating']
-    product.manufacturer_link = data['manufacturer_link']
-    db.session.commit()
-    return jsonify({'message': 'Product updated successfully'})
-
-@app.route('/products/<int:product_id>', methods=['DELETE'])
-def delete_product(product_id):
-    product = Products.query.get_or_404(product_id)
-    db.session.delete(product)
-    db.session.commit()
-    return jsonify({'message': 'Product deleted successfully'})
+        if not request.json:
+            return {
+                "message": "No data provided in the request"
+            }, 400
+        
+        for attr in request.json:
+            if hasattr(found_product, attr):
+                setattr(found_product, attr, request.json[attr])
+            else:
+                return {
+                    "message": f"Invalid attribute '{attr}' provided"
+                }, 400
+                
+        try:
+            db.session.add(found_product)
+            db.session.commit()
+            return {
+                "message": "Product updated successfully",
+                "product": found_product.to_dict()
+            }
+        except Exception as e:
+            db.session.rollback()
+            return {
+                "message": "An error occurred while updating the product",
+                "error": str(e)
+            }, 500
