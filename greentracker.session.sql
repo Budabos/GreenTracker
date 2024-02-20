@@ -1,1 +1,3 @@
-DELETE FROM users WHERE id = 6
+ALTER TABLE products
+ALTER COLUMN eco_rating TYPE INTEGER
+USING price::integer;
