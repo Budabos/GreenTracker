@@ -15,15 +15,15 @@ class Education_Resources(db.Model, SerializerMixin):
     
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     
-class Reviews(db.Model):
+class Reviews(db.Model, SerializerMixin):
     __tablename__ = 'reviews'
     
-    serialize_rules = ('-user',)
+    serialize_rules = ('-user.reviews','-product.reviews')
     
     id = db.Column(db.Integer, primary_key=True)
     user_id= db.Column(db.Integer, db.ForeignKey("users.id", ondelete='CASCADE'))
     product_id= db.Column(db.Integer, db.ForeignKey("products.id"))
-    rating = db.Column(db.String, nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
     review_text = db.Column(db.String, nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     
@@ -53,6 +53,8 @@ class Products(db.Model, SerializerMixin):
     eco_rating=db.Column(db.Integer, nullable=False)
     image_url=db.Column(db.String, nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
+    
+    reviews = db.relationship(Reviews, backref='product',cascade='all, delete-orphan')
     
 class Donations(db.Model, SerializerMixin):
     __tablename__ ="donations"
