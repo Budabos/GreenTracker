@@ -3,6 +3,7 @@ from models import Users
 from config import db, bcrypt, jwt
 from flask_bcrypt import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, create_refresh_token
+from flask import request
 
 @jwt.user_lookup_loader
 def user_lookup_callback(_jwt_header, jwt_data):
@@ -83,3 +84,47 @@ class Login(Resource):
             "refresh_token":refresh_token,
             "user":found_user.to_dict()
         },200
+        
+class UserById(Resource):
+    def get(self, id):
+        found_user = Users.query.filter(Users.id == id).first()
+        
+        if not found_user:
+            return {
+                "message":"User not found"
+            },404
+            
+        return found_user.to_dict(), 200
+    
+    def patch(self, id):
+        found_user = Users.query.filter(Users.id == id).first()
+        
+        if not found_user:
+            return {
+                "message":"User not found"
+            },404
+            
+        for attr in request.json:
+            setattr(found_user, attr, request.json[attr])
+            
+        db.session.add(found_user)
+        db.session.commit()
+        
+        return {
+            "message":"User edited successfully",
+            "user":found_user.to_dict()
+        }
+        
+    def delete(self, id):
+        found_user = Users.query.filter(Users.id == id).first()
+        
+        if not found_user:
+            return {
+                "message":"User not found"
+            },404
+            
+        db.session.delete(found_user)
+        
+        return {
+            "message":"User deleted successfully"
+        },204
