@@ -13,7 +13,6 @@ sqlalchemy-serializer = "*"
 flask-bcrypt = "*"
 flask-jwt-extended = "*"
 flask-cors = "*"
-resend = "*"
 
 [dev-packages]
 

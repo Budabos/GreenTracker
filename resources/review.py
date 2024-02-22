@@ -23,8 +23,7 @@ class ReviewsResource(Resource):
         db.session.commit()
         
         return {
-            "message":"Review posted successfully",
-            "review":new_review.to_dict()
+            "message":"Review posted successfully"
         }
 
 
