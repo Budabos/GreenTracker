@@ -1,10 +1,18 @@
 from flask_restful import Resource, reqparse
 from models import Users
-from config import db, bcrypt
+from config import db, bcrypt, jwt
+from flask_bcrypt import generate_password_hash, check_password_hash
+from flask_jwt_extended import create_access_token, create_refresh_token
+from flask import request
+
+@jwt.user_lookup_loader
+def user_lookup_callback(_jwt_header, jwt_data):
+    identity = jwt_data['sub']
+    return Users.query.filter_by(id = identity).first().to_dict()
+
 
 # Define UserAccounts class to handle user accounts
 class UserAccounts(Resource): 
-    
     # GET method to fetch all users   
     def get(self):
         # Retrieve all users from the database and convert them to dictionary format
@@ -13,7 +21,9 @@ class UserAccounts(Resource):
          # Return the list of users along with a success status code
         return users,200
     
-    # POST method to create a new user
+
+# POST method to create a new user
+class SignUp(Resource):
     def post(self):
         # Create a request parser to parse incoming data
         parser = reqparse.RequestParser()
@@ -24,7 +34,7 @@ class UserAccounts(Resource):
         parser.add_argument('phone', type=str, required=True, help='Phone number is required')
         parser.add_argument('password', type=str, required=True, help='Password is required')
         parser.add_argument('gender', type=str, required=True, help='Gender is required')
-        parser.add_argument('status', required=True, help='Status is required')
+        parser.add_argument('image_url')
         parser.add_argument('role', required=True, help='Role is required')
         parser.add_argument('interests', required=True, help='Interests is required')
         parser.add_argument('age', required=True, help='Age is required')
@@ -32,8 +42,15 @@ class UserAccounts(Resource):
         # Parse the incoming data
         args = parser.parse_args()
         
+        found_user = Users.query.filter(Users.email == args['email']).first()
+        
+        if found_user:
+            return {
+                "message":"User already exists"
+            },409
+          
         # Hash the password using bcrypt before storing in the database
-        args['password'] = bcrypt.generate_password_hash(args['password'].encode('utf-8'))
+        args['password'] = generate_password_hash(args['password']).decode('utf-8')
         
         # Create a new user object with parsed data
         new_user = Users(**args)
@@ -42,8 +59,85 @@ class UserAccounts(Resource):
         db.session.add(new_user)
         db.session.commit()
         
+        #Generate token and return user dict
+        access_token = create_access_token(identity=new_user.id)
+        refresh_token = create_refresh_token(identity=new_user.id)
+        
         # Return success message along with a success status code
         return {
-            "message":"User created successfully"
+            "message":"User created successfully",
+            "access_token":access_token,
+            "refresh_token":refresh_token,
+            "user":new_user.to_dict()
         },201
         
+class Login(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        
+        parser.add_argument('email', type=str, required=True, help='Email is required')
+        parser.add_argument('password', type=str, required=True, help='Password is required')
+        
+        args = parser.parse_args()
+        
+        found_user = Users.query.filter(Users.email == args['email']).first()
+
+        if not found_user or not check_password_hash(found_user.password, args['password']):
+            return {
+                "message":"Invalid credentials"
+            },401
+            
+        #Generate token and return user dict
+        access_token = create_access_token(identity=found_user.id)
+        refresh_token = create_refresh_token(identity=found_user.id)
+            
+        return {
+            "message":"Login successful",
+            "access_token":access_token,
+            "refresh_token":refresh_token,
+            "user":found_user.to_dict()
+        },200
+        
+class UserById(Resource):
+    def get(self, id):
+        found_user = Users.query.filter(Users.id == id).first()
+        
+        if not found_user:
+            return {
+                "message":"User not found"
+            },404
+            
+        return found_user.to_dict(), 200
+    
+    def patch(self, id):
+        found_user = Users.query.filter(Users.id == id).first()
+        
+        if not found_user:
+            return {
+                "message":"User not found"
+            },404
+            
+        for attr in request.json:
+            setattr(found_user, attr, request.json[attr])
+            
+        db.session.add(found_user)
+        db.session.commit()
+        
+        return {
+            "message":"User edited successfully",
+            "user":found_user.to_dict()
+        }
+        
+    def delete(self, id):
+        found_user = Users.query.filter(Users.id == id).first()
+        
+        if not found_user:
+            return {
+                "message":"User not found"
+            },404
+            
+        db.session.delete(found_user)
+        
+        return {
+            "message":"User deleted successfully"
+        },204
