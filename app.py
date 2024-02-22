@@ -15,6 +15,7 @@ from resources.products import ProductResource, ProductResourceById
 
 
 
+
 # Add resources to the API
 api.add_resource(EduResource, '/education-resources')
 api.add_resource(UserAccounts, '/users')
