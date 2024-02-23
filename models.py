@@ -1,9 +1,11 @@
-from config import db
-from sqlalchemy_serializer import SerializerMixin
+from config import db # Importing the database instance from the config file
+from sqlalchemy_serializer import SerializerMixin  # Importing SerializerMixin for serializing model instances
 
+# Defining Education_Resources model
 class Education_Resources(db.Model, SerializerMixin):
-    __tablename__ = 'educational_resources'
+    __tablename__ = 'educational_resources'  # Table name in the database
     
+     # Defining columns
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
@@ -13,23 +15,27 @@ class Education_Resources(db.Model, SerializerMixin):
     image_url = db.Column(db.String, nullable=False)
     date_published = db.Column(db.DateTime, nullable=False)
     
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    created_at = db.Column(db.DateTime, server_default=db.func.now())  # Creation timestamp
     
+# Defining Reviews model
 class Reviews(db.Model, SerializerMixin):
-    __tablename__ = 'reviews'
+    __tablename__ = 'reviews' # Table name
     
     serialize_rules = ('-user.reviews','-product.reviews')
     
+    # Defining columns
     id = db.Column(db.Integer, primary_key=True)
     user_id= db.Column(db.Integer, db.ForeignKey("users.id", ondelete='CASCADE'))
     product_id= db.Column(db.Integer, db.ForeignKey("products.id"))
     rating = db.Column(db.Integer, nullable=False)
     review_text = db.Column(db.String, nullable=False)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    
+    created_at = db.Column(db.DateTime, server_default=db.func.now())  # Creation timestamp
+ 
+ # Defining Events model   
 class Events(db.Model):
-    __tablename__ = 'events'
+    __tablename__ = 'events'  # Table name
     
+    # Defining columns
     id= db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
@@ -40,11 +46,14 @@ class Events(db.Model):
     contact_info = db.Column(db.String, nullable=False)
     registration_deadline = db.Column(db.DateTime, nullable=False)
     
+    # Creation timestamp
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
+# Defining Products model
 class Products(db.Model, SerializerMixin):
-    __tablename__ ="products"
+    __tablename__ ="products"  # Table name
     
+    # Defining columns
     id= db.Column(db.Integer, primary_key=True)
     name=db.Column(db.String, nullable=False)
     description=db.Column(db.String, nullable=False)
@@ -52,15 +61,18 @@ class Products(db.Model, SerializerMixin):
     price=db.Column(db.Integer, nullable=False)
     eco_rating=db.Column(db.Integer, nullable=False)
     image_url=db.Column(db.String, nullable=False)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    created_at = db.Column(db.DateTime, server_default=db.func.now())  # Creation timestamp
     
+    # Relationship with Reviews model
     reviews = db.relationship(Reviews, backref='product',cascade='all, delete-orphan')
-    
+
+# Defining Donations model    
 class Donations(db.Model, SerializerMixin):
-    __tablename__ ="donations"
+    __tablename__ ="donations"    # Table name
     
-    serialize_rules = ('-user',)
+    serialize_rules = ('-user',)    # Serialization rules
     
+    # Defining columns
     id= db.Column(db.Integer, primary_key=True)
     user_id= db.Column(db.Integer, db.ForeignKey("users.id",ondelete='CASCADE'))
     amount=db.Column(db.String, nullable=False)

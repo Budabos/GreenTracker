@@ -44,7 +44,7 @@ class DonationsResource(Resource):
             return {"message":"Donation created successfully"}
         except:
             # Return an error message if donation creation fails
-            return {"message":"Donation not created"}
+            return {"message" : "Donation not found"}
            
 class DonationsResourceById(Resource):
     def patch(self,id):
@@ -65,6 +65,6 @@ class DonationsResourceById(Resource):
                 return {"message":"Donation not updated"}
         else:
           return {
-            "message:"Donation not found"
+            "message":"Donation not found"
           },404
 
