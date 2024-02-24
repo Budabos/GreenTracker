@@ -54,6 +54,8 @@ class EventsResourceById(Resource):
         event = Events.query.get_or_404(event_id)
         db.session.delete(event)
         db.session.commit()
-        return '', 204
+        return {
+            "message":"Event deleted successfully"
+            }, 204
 
   
