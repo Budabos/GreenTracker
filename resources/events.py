@@ -85,6 +85,7 @@ class EventsResourceById(Resource):
         # Delete the event from the database session and commit the transaction
         db.session.delete(event)
         db.session.commit()
+        
         # Return empty response with success status code
         return {
           "message":"Event deleted successfully"
