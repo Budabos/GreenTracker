@@ -13,6 +13,7 @@ from resources.trackgoals import TrackGoalsResource
 from resources.donations import DonationsResource, DonationsResourceById
 from resources.review import ReviewsResource
 from resources.products import ProductResource, ProductResourceById
+from resources.summary import Summary
 
 app.config['MAIL_SERVER'] = 'sandbox.smtp.mailtrap.io'
 app.config['MAIL_PORT'] = 2525
@@ -54,6 +55,7 @@ api.add_resource(ProductResourceById, '/products/<int:id>')
 api.add_resource(DonationsResource, '/donations')
 api.add_resource(DonationsResourceById,'/donations/<int:id>')
 api.add_resource(ReviewsResource, '/reviews')
+api.add_resource(Summary, '/summary')
 
 
 if __name__ == '__main__':
