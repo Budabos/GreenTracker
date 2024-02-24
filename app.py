@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_mail import Mail, Message
 from resources.impact import ImpactMonitorings, ImpactMonitoringsById
 from resources.carbon import CarbonFootprintCalculation, CarbonFootprintCalculationById
 from config import app, api
@@ -12,6 +13,23 @@ from resources.trackgoals import TrackGoalsResource
 from resources.donations import DonationsResource, DonationsResourceById
 from resources.review import ReviewsResource
 from resources.products import ProductResource, ProductResourceById
+
+app.config['MAIL_SERVER'] = 'sandbox.smtp.mailtrap.io'
+app.config['MAIL_PORT'] = 2525
+app.config['MAIL_USERNAME'] = 'c3bd45c5a3ecd2'
+app.config['MAIL_PASSWORD'] = 'fd9e0258a34ec0'
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+
+# Create a Mail instance and associate it with your Flask app
+mail = Mail(app)
+
+@app.route("/")
+def index():
+    msg = Message(subject='Hello from the other side!', sender='peter@mailtrap.io', recipients=['ararieya@gmail.com'])
+    msg.body = "Hey Ashley, sending you this email from GreenTracker, how may I help you?"
+    mail.send(msg)
+    return "Message sent!"
 
 # Add resources to the API
 api.add_resource(EduResource, '/education-resources')
