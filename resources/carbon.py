@@ -23,6 +23,24 @@ class CarbonFootprintCalculation(Resource):
         # Parse the arguments from the request
         args = self.carbon_footprint_parser.parse_args()
 
+ # Electricity API request
+        data = {
+            "type": "electricity",
+            "electricity_unit": "kwh",
+            "electricity_value": 42,
+            }
+
+        headers = {
+            "Authorization": "SMWB0P4sDjqKPPghPANKg",
+            "Content-Type": "application/json"
+        }
+        response = requests.post("https://www.carboninterface.com/api/v1/estimates", json=data, headers=headers)
+
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Extract carbon footprint data from the response
+            carbon_data = response.json()
+
         # Create a new instance of CarbonFootPrintCountModel with parsed arguments
         new_footprint = CarbonFootPrintCount(
             user_id=args['user_id'],
