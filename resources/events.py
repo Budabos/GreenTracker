@@ -11,6 +11,7 @@ def serialize_event(event):
           'date_event': event.date_event.isoformat(),
           'organizer': event.organizer,
           'contact_info': event.contact_info,
+          'image_url':event.image_url,
           'registration_deadline': event.registration_deadline.isoformat() if event.registration_deadline else None
       }
 

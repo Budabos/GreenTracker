@@ -46,6 +46,7 @@ class Events(db.Model):
     contact_info = db.Column(db.String, nullable=False)
     registration_deadline = db.Column(db.DateTime, nullable=False)
     
+    
     # Creation timestamp
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
@@ -142,10 +143,10 @@ class TrackGoals(db.Model, SerializerMixin):
     
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
-class UserEvents(db.Model):
+class UserEvents(db.Model, SerializerMixin):
     __tablename__ ="user_events"
-    
-    serialize_rules = ('-user',)
+
+    # serialize_rules = ('-user','-event')    
 
     id= db.Column(db.Integer, primary_key=True)
     user_id= db.Column(db.Integer, db.ForeignKey("users.id", ondelete='CASCADE'))
@@ -167,7 +168,7 @@ class FeedbackForm(db.Model, SerializerMixin):
 class Users(db.Model, SerializerMixin):
     __tablename__ ="users"
     
-    serialize_rules = ('-password',)
+    serialize_rules = ('-password','-events.user')
     
     id= db.Column(db.Integer, primary_key=True)
     first_name=db.Column(db.String, nullable=False)
