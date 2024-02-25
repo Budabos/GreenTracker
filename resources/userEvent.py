@@ -1,4 +1,4 @@
-from flask_restful import Resource,abort,fields,marshal_with
+from flask_restful import Resource,abort,fields,marshal_with, reqparse
 from models import UserEvents
 from config import db
 
@@ -23,4 +23,22 @@ class User_Event(Resource):
             events = UserEvents.query.all()
 
             return events
+        
+    def post(self):
+        parser = reqparse.RequestParser()
+        
+        parser.add_argument('user_id', type=int, required=True, help='User ID is required')
+        parser.add_argument('event_id', type=int, required=True, help='Event ID is required')
+        
+        args = parser.parse_args()
+        
+        new_user_event = UserEvents(**args)
+        
+        db.session.add(new_user_event)
+        db.session.commit()
+        
+        return {
+            "message":"Booking successful",
+            "user_event":new_user_event.to_dict()
+        },201
         
