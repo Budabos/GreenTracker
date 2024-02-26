@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_restful import Api, Resource, reqparse
 from flask_mail import Mail, Message
 from flask_bcrypt import generate_password_hash, check_password_hash
