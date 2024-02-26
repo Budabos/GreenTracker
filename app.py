@@ -3,7 +3,7 @@ from flask import Flask,session
 from resources.impact import ImpactMonitorings, ImpactMonitoringsById
 from resources.carbon import CarbonFootprintCalculation, CarbonFootprintCalculationById
 from config import app, api
-from resources.edu_resources import EduResource
+from resources.edu_resources import EduResource, EduResourceById
 from resources.user import UserAccounts, SignUp, Login, UserById
 from resources.events import EventsResource, EventsResourceById
 from resources.partners import PartnerResource
@@ -40,6 +40,7 @@ from resources.summary import Summary
 
 # Add resources to the API
 api.add_resource(EduResource, '/education-resources')
+api.add_resource(EduResourceById, '/education-resources/<int:id>')
 api.add_resource(UserAccounts, '/users')
 api.add_resource(UserById, '/users/<int:id>')
 api.add_resource(SignUp, '/signup')

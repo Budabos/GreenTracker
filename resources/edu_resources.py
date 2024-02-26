@@ -1,6 +1,7 @@
 from flask_restful import Resource, reqparse
 from models import Education_Resources
 from config import db
+from flask import request
 
 class EduResource(Resource):
     # GET method to fetch all education resources
@@ -39,3 +40,60 @@ class EduResource(Resource):
         return {
             "message":"Education resource created successfully"
         }, 201
+        
+class EduResourceById(Resource):
+    def get(self, id):
+        found_resource = Education_Resources.query.filter(Education_Resources.id == id).first()
+        
+        if not found_resource:
+            return {
+                "message":"Educational resource not found"
+            },404
+            
+        return found_resource.to_dict(),200
+    
+    def patch(self, id):
+        found_resource = Education_Resources.query.filter(Education_Resources.id == id).first()
+        
+        if not found_resource:
+            return {
+                "message":"Educational resource not found"
+            },404
+            
+        for attr in request.json:
+            if hasattr(found_resource, attr):
+                setattr(found_resource, attr, request.json[attr])
+            else:
+                return {
+                    "message": f"Invalid attribute '{attr}' provided"
+                }, 400
+            
+        try:
+            db.session.add(found_resource)
+            db.session.commit()
+            return {
+                "message": "Education resource updated successfully",
+                "resource": found_resource.to_dict()
+            }
+        except Exception as e:
+            db.session.rollback()
+            return {
+                "message": "An error occurred while updating the resource",
+                "error": str(e)
+            }, 500
+    
+        
+    def delete(self, id):
+        found_resource = Education_Resources.query.filter(Education_Resources.id == id).first()
+        
+        if not found_resource:
+            return {
+                "message":"Educational resource not found"
+            },404
+            
+        db.session.delete(found_resource)
+        db.session.commit()
+        
+        return {
+            "message":"Educational resource delete successfully"
+        },204
