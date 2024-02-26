@@ -138,6 +138,19 @@ class UserById(Resource):
                 "message":"User not found"
             },404
             
+        if request.json['phone'] or request.json['email']:
+            found_phone = Users.query.filter(Users.id != found_user.id).filter(Users.phone == request.json['phone']).first()
+            found_email = Users.query.filter(Users.id != found_user.id).filter(Users.email == request.json['email']).first()
+            
+            if found_phone:
+                return {
+                    "message":"Phone number already registered"
+                }, 409
+            elif found_email:
+                return {
+                    "message":"Email already registered"
+                }, 409
+            
         for attr in request.json:
             if attr != 'password':
                 setattr(found_user, attr, request.json[attr])
