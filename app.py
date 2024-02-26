@@ -4,7 +4,7 @@ from resources.impact import ImpactMonitorings, ImpactMonitoringsById
 from resources.carbon import CarbonFootprintCalculation, CarbonFootprintCalculationById
 from config import app, api
 from resources.edu_resources import EduResource, EduResourceById
-from resources.user import UserAccounts, SignUp, Login, UserById
+from resources.user import UserAccounts, SignUp, Login, UserById, ChangePassword
 from resources.events import EventsResource, EventsResourceById
 from resources.partners import PartnerResource
 from resources.feedback import Feedback
@@ -63,6 +63,7 @@ api.add_resource(DonationsResource, '/donations')
 api.add_resource(DonationsResourceById,'/donations/<int:id>')
 api.add_resource(ReviewsResource, '/reviews')
 api.add_resource(Summary, '/summary')
+api.add_resource(ChangePassword,'/change_password/<int:id>')
 
 
 if __name__ == '__main__':

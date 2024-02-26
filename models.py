@@ -175,7 +175,7 @@ class Users(db.Model, SerializerMixin):
     last_name=db.Column(db.String, nullable=False)
     email=db.Column(db.String, nullable=False, unique=True)
     
-    phone=db.Column(db.Integer, nullable=False)
+    phone=db.Column(db.String, nullable=False, unique=True)
     password=db.Column(db.String, nullable=False)
     gender=db.Column(db.String, nullable=False)
         
