@@ -41,11 +41,13 @@ class SendWelcomeMail:
 
 class UserAccounts(Resource):
     def get(self):
+        # Retrieve all users from the database and convert them to dictionary format
         users = [user.to_dict() for user in Users.query.all()]
         return users, 200
 
 class SignUp(Resource):
     def post(self):
+        # Create a request parser to parse incoming data
         parser = reqparse.RequestParser()
 
         parser.add_argument('first_name', type=str, required=True, help='First name is required')
@@ -71,6 +73,8 @@ class SignUp(Resource):
         args['password'] = generate_password_hash(args['password']).decode('utf-8')
 
         new_user = Users(**args)
+        
+        # Add the new user to the database session and commit the transaction
         db.session.add(new_user)
         db.session.commit()
 

@@ -4,7 +4,7 @@ from resources.impact import ImpactMonitorings, ImpactMonitoringsById
 from resources.carbon import CarbonFootprintCalculation, CarbonFootprintCalculationById
 from config import app, api
 from resources.edu_resources import EduResource
-from resources.user import UserAccounts, SignUp, Login
+from resources.user import UserAccounts, SignUp, Login, UserById
 from resources.events import EventsResource, EventsResourceById
 from resources.partners import PartnerResource
 from resources.feedback import Feedback
@@ -13,6 +13,7 @@ from resources.trackgoals import TrackGoalsResource
 from resources.donations import DonationsResource, DonationsResourceById
 from resources.review import ReviewsResource
 from resources.products import ProductResource, ProductResourceById
+from resources.summary import Summary
 
 # app.config['MAIL_SERVER'] = 'sandbox.smtp.mailtrap.io'
 # app.config['MAIL_PORT'] = 2525
@@ -40,6 +41,7 @@ from resources.products import ProductResource, ProductResourceById
 # Add resources to the API
 api.add_resource(EduResource, '/education-resources')
 api.add_resource(UserAccounts, '/users')
+api.add_resource(UserById, '/users/<int:id>')
 api.add_resource(SignUp, '/signup')
 api.add_resource(Login, '/login')
 api.add_resource(ImpactMonitorings, '/impact_monitorings')
@@ -59,6 +61,7 @@ api.add_resource(ProductResourceById, '/products/<int:id>')
 api.add_resource(DonationsResource, '/donations')
 api.add_resource(DonationsResourceById,'/donations/<int:id>')
 api.add_resource(ReviewsResource, '/reviews')
+api.add_resource(Summary, '/summary')
 
 
 if __name__ == '__main__':

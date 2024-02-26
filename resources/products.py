@@ -16,7 +16,7 @@ class ProductResource(Resource):
         parser.add_argument('description', type=str, required=True, help='Description is required')
         parser.add_argument('category', type=str, required=True, help='Category is required')
         parser.add_argument('price', type=int, required=True, help='Price is required')
-        parser.add_argument('eco_rating', type=str, required=True, help='Eco-rating is required')
+        parser.add_argument('eco_rating', type=int, required=True, help='Eco-rating is required')
         parser.add_argument('image_url', required=True, type=str, help='Image url is required')
         
         
@@ -27,7 +27,8 @@ class ProductResource(Resource):
         db.session.commit()
         
         return {
-            "message":"Product added successfully"
+            "message":"Product added successfully",
+            "product":new_product.to_dict()
         }
         
 class ProductResourceById(Resource):
