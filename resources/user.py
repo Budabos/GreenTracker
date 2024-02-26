@@ -30,7 +30,7 @@ def user_lookup_callback(_jwt_header, jwt_data):
 
 class SendWelcomeMail:
     @staticmethod
-    def send(email):
+    def send(email, first_name):
         try:
             msg = Message(subject='Welcome to GreenTracker!', sender='peter@mailtrap.io', recipients=[email])
             msg.body = f"Hey, welcome to GreenTracker! We're excited to have you on board, {first_name}!"
@@ -79,7 +79,7 @@ class SignUp(Resource):
         db.session.commit()
 
         # Send welcome email using the SendWelcomeMail class
-        SendWelcomeMail.send(args['email'])
+        SendWelcomeMail.send(args['email'], args['first_name'])
 
         # Generate token and return user dict
         access_token = create_access_token(identity=new_user.id)
@@ -119,10 +119,11 @@ class Login(Resource):
             "user":found_user.to_dict()
         },200
 
-# Add resources to the API
-api.add_resource(UserAccounts, '/user-accounts')
-api.add_resource(SignUp, '/signup')
-api.add_resource(Login, '/login')
+class UserById(Resource):
+    def get(self, user_id):
+        user = Users.query.filter_by(id=user_id).first()
 
-if __name__ == '__main__':
-    app.run(debug=True)
+        if user:
+            return user.to_dict(), 200
+        else:
+            return {"message": "User not found"}, 404
