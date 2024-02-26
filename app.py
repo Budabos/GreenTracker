@@ -1,5 +1,5 @@
-from flask import Flask
-from flask_mail import Mail, Message
+from flask import Flask,session
+# from flask_mail import Mail, Message
 from resources.impact import ImpactMonitorings, ImpactMonitoringsById
 from resources.carbon import CarbonFootprintCalculation, CarbonFootprintCalculationById
 from config import app, api
@@ -15,22 +15,28 @@ from resources.review import ReviewsResource
 from resources.products import ProductResource, ProductResourceById
 from resources.summary import Summary
 
-app.config['MAIL_SERVER'] = 'sandbox.smtp.mailtrap.io'
-app.config['MAIL_PORT'] = 2525
-app.config['MAIL_USERNAME'] = 'c3bd45c5a3ecd2'
-app.config['MAIL_PASSWORD'] = 'fd9e0258a34ec0'
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
+# app.config['MAIL_SERVER'] = 'sandbox.smtp.mailtrap.io'
+# app.config['MAIL_PORT'] = 2525
+# app.config['MAIL_USERNAME'] = 'c3bd45c5a3ecd2'
+# app.config['MAIL_PASSWORD'] = 'fd9e0258a34ec0'
+# app.config['MAIL_USE_TLS'] = True
+# app.config['MAIL_USE_SSL'] = False
 
 # Create a Mail instance and associate it with your Flask app
-mail = Mail(app)
+# mail = Mail(app)
 
-@app.route("/")
-def index():
-    msg = Message(subject='Hello from the other side!', sender='peter@mailtrap.io', recipients=['ararieya@gmail.com'])
-    msg.body = "Hey Ashley, sending you this email from GreenTracker, how may I help you?"
-    mail.send(msg)
-    return "Message sent!"
+# @app.route("/")
+# def index():
+#     # Assuming the user email is stored in the session after login
+#     user_email = session.get('user_email')
+
+#     if user_email:
+#         msg = Message(subject='Hello from the other side!', sender='peter@mailtrap.io', recipients=[user_email])
+#         msg.body = f"Hey, sending you this email from GreenTracker, how may I help you, {user_email}?"
+#         mail.send(msg)
+#         return f"Message sent to {user_email}!"
+#     else:
+#         return "User not logged in."
 
 # Add resources to the API
 api.add_resource(EduResource, '/education-resources')

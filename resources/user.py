@@ -1,33 +1,55 @@
-from flask_restful import Resource, reqparse
-from models import Users
-from config import db, bcrypt, jwt
+from flask import Flask
+from flask_restful import Api, Resource, reqparse
+from flask_mail import Mail, Message
 from flask_bcrypt import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token, create_refresh_token
-from flask import request
+from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token
+from models import Users
+from config import db
+
+app = Flask(__name__)
+
+# Setup Flask-Mail
+app.config['MAIL_SERVER'] = 'sandbox.smtp.mailtrap.io'
+app.config['MAIL_PORT'] = 2525
+app.config['MAIL_USERNAME'] = 'c3bd45c5a3ecd2'
+app.config['MAIL_PASSWORD'] = 'fd9e0258a34ec0'
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+mail = Mail(app)
+
+# Setup Flask-JWT-Extended
+jwt = JWTManager(app)
+
+# Setup Flask-Restful
+api = Api(app)
 
 @jwt.user_lookup_loader
 def user_lookup_callback(_jwt_header, jwt_data):
     identity = jwt_data['sub']
-    return Users.query.filter_by(id = identity).first().to_dict()
+    return Users.query.filter_by(id=identity).first().to_dict()
 
+class SendWelcomeMail:
+    @staticmethod
+    def send(email, first_name):
+        try:
+            msg = Message(subject='Welcome to GreenTracker!', sender='peter@mailtrap.io', recipients=[email])
+            msg.body = f"Hey, welcome to GreenTracker! We're excited to have you on board, {first_name}!"
+            mail.send(msg)
+            print("Welcome email sent successfully")
+        except Exception as e:
+            print(f"Error sending welcome email: {str(e)}")
 
-# Define UserAccounts class to handle user accounts
-class UserAccounts(Resource): 
-    # GET method to fetch all users   
+class UserAccounts(Resource):
     def get(self):
         # Retrieve all users from the database and convert them to dictionary format
         users = [user.to_dict() for user in Users.query.all()]
-        
-         # Return the list of users along with a success status code
-        return users,200
-    
+        return users, 200
 
-# POST method to create a new user
 class SignUp(Resource):
     def post(self):
         # Create a request parser to parse incoming data
         parser = reqparse.RequestParser()
-        
+
         parser.add_argument('first_name', type=str, required=True, help='First name is required')
         parser.add_argument('last_name', type=str, required=True, help='Last name is required')
         parser.add_argument('email', type=str, required=True, help='Email is required')
@@ -38,39 +60,38 @@ class SignUp(Resource):
         parser.add_argument('role', required=True, help='Role is required')
         parser.add_argument('interests', required=True, help='Interests is required')
         parser.add_argument('age', required=True, help='Age is required')
-        
-        # Parse the incoming data
+
         args = parser.parse_args()
-        
+
         found_user = Users.query.filter(Users.email == args['email']).first()
-        
+
         if found_user:
             return {
-                "message":"User already exists"
-            },409
-          
-        # Hash the password using bcrypt before storing in the database
+                "message": "User already exists"
+            }, 409
+
         args['password'] = generate_password_hash(args['password']).decode('utf-8')
-        
-        # Create a new user object with parsed data
+
         new_user = Users(**args)
         
         # Add the new user to the database session and commit the transaction
         db.session.add(new_user)
         db.session.commit()
-        
-        #Generate token and return user dict
+
+        # Send welcome email using the SendWelcomeMail class
+        SendWelcomeMail.send(args['email'], args['first_name'])
+
+        # Generate token and return user dict
         access_token = create_access_token(identity=new_user.id)
         refresh_token = create_refresh_token(identity=new_user.id)
-        
-        # Return success message along with a success status code
+
         return {
-            "message":"User created successfully",
-            "access_token":access_token,
-            "refresh_token":refresh_token,
-            "user":new_user.to_dict()
-        },201
-        
+            "message": "User created successfully",
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "user": new_user.to_dict()
+        }, 201
+
 class Login(Resource):
     def post(self):
         parser = reqparse.RequestParser()
@@ -97,7 +118,7 @@ class Login(Resource):
             "refresh_token":refresh_token,
             "user":found_user.to_dict()
         },200
-        
+
 class UserById(Resource):
     def get(self, id):
         found_user = Users.query.filter(Users.id == id).first()
