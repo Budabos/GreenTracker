@@ -1,7 +1,7 @@
 from config import app, db
-from models import Education_Resources, Events
+from models import Users
 
 with app.app_context():
-    Events.query.delete()
+    Users.query.delete()
     db.session.commit()
-    print("Successful feedback delete")
+    print("Successful users delete")

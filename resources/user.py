@@ -118,7 +118,8 @@ class UserById(Resource):
             },404
             
         for attr in request.json:
-            setattr(found_user, attr, request.json[attr])
+            if attr != 'password':
+                setattr(found_user, attr, request.json[attr])
             
         db.session.add(found_user)
         db.session.commit()
@@ -141,3 +142,34 @@ class UserById(Resource):
         return {
             "message":"User deleted successfully"
         },204
+        
+class ChangePassword(Resource):
+    def patch(self, id):
+        parser = reqparse.RequestParser()
+        
+        parser.add_argument('current_password', type=str, required=True, help='Current password is required')
+        parser.add_argument('new_password', type=str, required=True, help='New password is required')
+        
+        args = parser.parse_args()
+        
+        found_user = Users.query.filter(Users.id == id).first()
+        
+        if not found_user:
+            return {
+                "message":"User not found"
+            },404
+        elif not check_password_hash(found_user.password, args['current_password']):
+            return {
+                "message":"Invalid credentials"
+            },401
+            
+        args['new_password'] = generate_password_hash(args['new_password']).decode('utf-8')
+            
+        setattr(found_user, 'password', args['new_password'])
+        
+        db.session.add(found_user)
+        db.session.commit()
+        
+        return {
+            "message":"Password changed successfully"
+        },200
