@@ -18,7 +18,7 @@ class DonationsResource(Resource):
 
     # Add expected arguments to the parser
     profile_parser.add_argument("amount", type=int, required=True, help="Amount is required")
-    profile_parser.add_argument("date", type=datetime.fromisoformat, required=True, help="Date is required")
+    profile_parser.add_argument("date", required=True, help="Date is required")
     profile_parser.add_argument("purpose", type=str, required=True, help="Purpose is required")
     profile_parser.add_argument("user_id", type=int, required=True, help="User ID is required")
     
@@ -32,7 +32,7 @@ class DonationsResource(Resource):
     # Handle POST requests
     def post(self):
         # Parse request data
-        data= DonationsResource.parser.parser_args()
+        data= self.profile_parser.parse_args()
 
         # Create a new donation object
         donation = Donations(**data)
@@ -44,7 +44,7 @@ class DonationsResource(Resource):
             return {"message":"Donation created successfully"}
         except:
             # Return an error message if donation creation fails
-            return {"message" : "Donation not found"}
+            return {"message" : "Donation creation failed"}
            
 class DonationsResourceById(Resource):
     def patch(self,id):
