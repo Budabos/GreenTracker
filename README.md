@@ -109,6 +109,21 @@ Description: Tailwind CSS is a utility-first CSS framework that provides a set o
 4. Figma:
 Description: Figma is a collaborative design tool used for creating wireframes, prototypes, and UI designs. Role in Project: Employed for planning and creating wireframes to visualize the layout and design of the Green Tracker app's frontend.
 
+5. Flask-SQLAlchemy:
+Description: Flask extension that simplifies database integration with Flask applications using SQLAlchemy, an SQL toolkit and Object-Relational Mapping (ORM) library. Role in Project: Facilitates interaction between the Flask application and the relational database, managing models and relationships.
+
+6. Thunder Client:
+Description: Thunder Client is a REST API client extension for Visual Studio Code, simplifying the testing of API endpoints. Role in Project: Potentially used for testing and interacting with the Flask API during development.
+
+7. React Router:
+Description: React Router is a standard library for routing in React applications, enabling navigation between different views or components. Role in Project: Used to create and manage different client-side routes, enhancing user navigation within the React frontend.
+
+7. Render:
+Description: Render is a platform for deploying and scaling web applications and static websites. Role in Project: Used for deploying both the Flask backend and the React frontend, making the workout app accessible online.
+
+8. Virtualenv:
+Description: Virtualenv is a tool for creating isolated Python environments, ensuring dependencies for different projects don't interfere with each other. Role in Project: Used for managing Python dependencies and creating a virtual environment for the Flask application.
+
 
 
 
