@@ -54,6 +54,9 @@ class Events(db.Model):
 class Products(db.Model, SerializerMixin):
     __tablename__ ="products"  # Table name
     
+    serialize_rules = ('-order_product.product',)
+
+    
     # Defining columns
     id= db.Column(db.Integer, primary_key=True)
     name=db.Column(db.String, nullable=False)
@@ -66,7 +69,7 @@ class Products(db.Model, SerializerMixin):
     
     # Relationship with Reviews model
     reviews = db.relationship(Reviews, backref='product',cascade='all, delete-orphan')
-
+    order_products = db.relationship('OrderProduct', back_populates='product')
 # Defining Donations model    
 class Donations(db.Model, SerializerMixin):
     __tablename__ ="donations"    # Table name
@@ -165,10 +168,36 @@ class FeedbackForm(db.Model, SerializerMixin):
     feedback_message = db.Column(db.String, nullable=False) 
     created_at = db.Column(db.DateTime, server_default=db.func.now(), nullable=False)
     
+
+    
+class Order(db.Model, SerializerMixin):
+    __tablename__ = 'orders'
+    
+    serialize_rules = ('-order_product.order',)
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
+    total_price = db.Column(db.Integer, nullable=False)
+    
+    order_products = db.relationship('OrderProduct', back_populates='order')
+
+class OrderProduct(db.Model, SerializerMixin):
+    __tablename__ = 'order_product'
+    
+    serialize_rules = ('-product','-order')
+    
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('orders.id'))
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'))
+    quantity = db.Column(db.Integer, nullable=False)
+
+    order = db.relationship('Order', back_populates='order_products')
+    product = db.relationship('Products', back_populates='order_products')
+    
 class Users(db.Model, SerializerMixin):
     __tablename__ ="users"
     
-    serialize_rules = ('-password','-events.user')
+    serialize_rules = ('-password','-events.user', '-orders.user')
     
     id= db.Column(db.Integer, primary_key=True)
     first_name=db.Column(db.String, nullable=False)
@@ -192,3 +221,4 @@ class Users(db.Model, SerializerMixin):
     impact_monitorings = db.relationship(Impact_Monitorings, backref='user', cascade='all, delete-orphan')
     track_goals = db.relationship(TrackGoals, backref='user', cascade='all, delete-orphan')
     events = db.relationship(UserEvents, backref='user', cascade='all, delete-orphan')
+    orders = db.relationship('Order', backref='user', lazy=True)

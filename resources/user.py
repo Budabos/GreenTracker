@@ -63,9 +63,10 @@ class SignUp(Resource):
 
         args = parser.parse_args()
 
-        found_user = Users.query.filter(Users.email == args['email']).first()
+        found_email = Users.query.filter(Users.email == args['email']).first()
+        found_phone = Users.query.filter(Users.email == args['phone']).first()
 
-        if found_user:
+        if found_email or found_phone:
             return {
                 "message": "User already exists"
             }, 409
