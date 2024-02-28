@@ -165,7 +165,9 @@ Miriam Maina ("https://github.com/wahitum")
 John Mbeba ("https://github.com/jmbeba")
 Caroline Opiyo ("https://github.com/Budabos")
 Ian Gichane ("https://github.com/IanGichane")
+Ashley Rarieya ("https://github.com/ararieya")
 Nelson Murithi ("https://github.com/NellieMK65")
+Elijah Ngocho  ("https://github.com/ngocho24")
 
 
 ## Deploying
