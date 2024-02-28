@@ -4,7 +4,7 @@ from flask_mail import Mail, Message
 from flask_bcrypt import generate_password_hash, check_password_hash
 from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token
 from models import Users
-from config import db
+from config import db, jwt
 
 app = Flask(__name__)
 
@@ -16,12 +16,6 @@ app.config['MAIL_PASSWORD'] = 'fd9e0258a34ec0'
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
-
-# Setup Flask-JWT-Extended
-jwt = JWTManager(app)
-
-# Setup Flask-Restful
-api = Api(app)
 
 @jwt.user_lookup_loader
 def user_lookup_callback(_jwt_header, jwt_data):
