@@ -1,21 +1,16 @@
+import datetime
+import os
 from flask import Flask, request
 from flask_restful import Api, Resource, reqparse
 from flask_mail import Mail, Message
 from flask_bcrypt import generate_password_hash, check_password_hash
-from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token
-from models import Users
-from config import db, jwt
+from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, decode_token
+from models import Users, ForgotPasswords
+from config import db, jwt, mail, app
+from mails.index import get_welcome_email, get_forget_pass_email
+from dotenv import load_dotenv
 
-app = Flask(__name__)
-
-# Setup Flask-Mail
-app.config['MAIL_SERVER']='sandbox.smtp.mailtrap.io'
-app.config['MAIL_PORT'] = 2525
-app.config['MAIL_USERNAME'] = 'fcb09c6d60f8b6'
-app.config['MAIL_PASSWORD'] = 'd8da5717106027'
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
-mail = Mail(app)
+load_dotenv()
 
 @jwt.user_lookup_loader
 def user_lookup_callback(_jwt_header, jwt_data):
@@ -28,6 +23,7 @@ class SendWelcomeMail:
         try:
             msg = Message(subject='Welcome to GreenTracker!', sender='peter@mailtrap.io', recipients=[email])
             msg.body = f"Hey, welcome to GreenTracker! We're excited to have you on board, {first_name}!"
+            msg.html = get_welcome_email(first_name)
             mail.send(msg)
             print("Welcome email sent successfully")
         except Exception as e:
@@ -202,3 +198,99 @@ class ChangePassword(Resource):
         return {
             "message":"Password changed successfully"
         },200
+
+class ForgotPassword(Resource):
+    def post(self):
+        front_url = os.getenv('FRONTEND_URL')
+        url = f'{front_url}/reset' if front_url else 'http://localhost:4000/reset/'
+        
+        data = request.get_json()
+        email = data['email']
+        
+        if not email:
+            return {
+                "message":"Email is required"
+            },400
+            
+        found_user = Users.query.filter(Users.email == email).first()
+        
+        if not found_user:
+            return {
+                "message":"User not found"
+            }, 404
+            
+        found_reset = ForgotPasswords.query.filter(ForgotPasswords.user_email == found_user.email).first()
+        
+        if found_reset:
+            db.session.delete(found_reset)
+            db.session.commit()
+            
+        expires = datetime.timedelta(hours=24)
+        reset_token = create_access_token(str(found_user.id), expires_delta=expires, additional_claims={'email':found_user.email})
+        url = url + reset_token
+        
+        forgot_pass = ForgotPasswords(
+            user_email=found_user.email,
+            token=reset_token
+        )
+        
+        db.session.add(forgot_pass)
+        db.session.commit()
+        
+        msg = Message(subject='Forgot password', sender='greentrackerhelp@gmail.com', recipients=[email])
+        msg.body = f"Hey {found_user.first_name}, someone submitted a forgotten password request."
+        msg.html = get_forget_pass_email(found_user.first_name, url)
+        mail.send(msg)
+        
+        return {
+            "message":"Forgotten password email has been sent to your email"
+        }, 200
+        
+class ResetPassword(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        
+        parser.add_argument('email', type=str, required=True, help='Email is required')
+        parser.add_argument('token', type=str, required=True, help='Token is required')
+        parser.add_argument('password', type=str, required=True, help='Password is required')
+        
+        args = parser.parse_args()
+        
+        found_token = ForgotPasswords.query.filter(ForgotPasswords.user_email == args['email']).first()
+        
+        if not found_token:
+            return {
+                "message":"Token invalid. Try resetting password again."
+                },400 
+        
+        if found_token.token == args['token']:
+            decoded_token = decode_token(args['token'])
+            
+            exp = decoded_token['exp']
+            expiration_datetime = datetime.datetime.utcfromtimestamp(exp)
+        
+            if expiration_datetime < datetime.datetime.utcnow():
+                return {
+                "message":"Token invalid. Try resetting password again."
+                },400 
+            else:
+                password = generate_password_hash(args['password']).decode('utf-8')
+                
+                found_user = Users.query.filter(Users.email == found_token.user_email).first()
+                
+                found_user.password = password
+                db.session.add(found_user)
+                db.session.commit()
+                
+                db.session.delete(found_token)
+                db.session.commit()
+                
+                return {
+                    "message":"Password reset successfully"
+                }
+    
+        else:
+            return {
+                "message":"Token invalid. Try resetting password again."
+            },400 
+        

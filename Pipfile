@@ -17,6 +17,7 @@ flask-mail = "*"
 mailtrap = "*"
 flask-mailman = "*"
 gunicorn = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

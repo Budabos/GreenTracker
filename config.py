@@ -9,7 +9,15 @@ from flask_cors import CORS
 from flask_mail import Mail
 
 app = Flask(__name__)
+# Setup Flask-Mail
+app.config['MAIL_SERVER']='sandbox.smtp.mailtrap.io'
+app.config['MAIL_PORT'] = 2525
+app.config['MAIL_USERNAME'] = 'fcb09c6d60f8b6'
+app.config['MAIL_PASSWORD'] = 'd8da5717106027'
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
+
 app.secret_key = b'Y\xf1Xz\x00\xad|eQ\x80t \xca\x1a\x10K'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://greentracker_user:UtvFWi3eGRPWuVluquJFg7ZQVtvxriEH@dpg-cn6qrtljm4es73bo21pg-a.frankfurt-postgres.render.com/greentracker'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

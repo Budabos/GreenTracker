@@ -1,3 +1,1 @@
-ALTER TABLE reviews
-ALTER COLUMN rating TYPE INTEGER
-USING rating::integer;
+DELETE FROM forgot_password 
