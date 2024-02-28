@@ -9,10 +9,10 @@ from config import db, jwt
 app = Flask(__name__)
 
 # Setup Flask-Mail
-app.config['MAIL_SERVER'] = 'sandbox.smtp.mailtrap.io'
+app.config['MAIL_SERVER']='sandbox.smtp.mailtrap.io'
 app.config['MAIL_PORT'] = 2525
-app.config['MAIL_USERNAME'] = 'c3bd45c5a3ecd2'
-app.config['MAIL_PASSWORD'] = 'fd9e0258a34ec0'
+app.config['MAIL_USERNAME'] = 'fcb09c6d60f8b6'
+app.config['MAIL_PASSWORD'] = 'd8da5717106027'
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
