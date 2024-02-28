@@ -1,3 +1,4 @@
+from enum import unique
 from config import db # Importing the database instance from the config file
 from sqlalchemy_serializer import SerializerMixin  # Importing SerializerMixin for serializing model instances
 
@@ -222,3 +223,11 @@ class Users(db.Model, SerializerMixin):
     track_goals = db.relationship(TrackGoals, backref='user', cascade='all, delete-orphan')
     events = db.relationship(UserEvents, backref='user', cascade='all, delete-orphan')
     orders = db.relationship('Order', backref='user', lazy=True)
+
+
+class ForgotPasswords(db.Model):
+    __tablename__ = 'forgot_password'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_email = db.Column(db.String, nullable=False, unique=True)
+    token = db.Column(db.String, nullable=False)
