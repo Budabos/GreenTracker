@@ -21,9 +21,12 @@ class SendWelcomeMail:
     @staticmethod
     def send(email, first_name):
         try:
+            front_url = os.getenv('FRONTEND_URL')
+            url = front_url if front_url else 'http://localhost:4000/'
+            
             msg = Message(subject='Welcome to GreenTracker!', sender='peter@mailtrap.io', recipients=[email])
             msg.body = f"Hey, welcome to GreenTracker! We're excited to have you on board, {first_name}!"
-            msg.html = get_welcome_email(first_name)
+            msg.html = get_welcome_email(first_name, url)
             mail.send(msg)
             print("Welcome email sent successfully")
         except Exception as e:
