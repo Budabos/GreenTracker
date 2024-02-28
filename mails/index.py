@@ -1,4 +1,4 @@
-def get_welcome_email(first_name):    
+def get_welcome_email(first_name, link):    
     return f'''
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html dir="ltr" lang="en">
@@ -58,7 +58,7 @@ def get_welcome_email(first_name):
                     <tr>
                     <td>
                         <a
-                        href="https://getkoala.com"
+                        href="{link}"
                         style="
                             background-color: #245501;
                             border-radius: 3px;
