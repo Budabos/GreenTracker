@@ -16,6 +16,7 @@ flask-cors = "*"
 flask-mail = "*"
 mailtrap = "*"
 flask-mailman = "*"
+gunicorn = "*"
 
 [dev-packages]
 
