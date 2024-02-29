@@ -4,7 +4,7 @@ from flask import Flask, request
 from flask_restful import Api, Resource, reqparse
 from flask_mail import Mail, Message
 from flask_bcrypt import generate_password_hash, check_password_hash
-from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, decode_token
+from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, decode_token, jwt_required
 from models import Users, ForgotPasswords
 from config import db, jwt, mail, app
 from mails.index import get_welcome_email, get_forget_pass_email
@@ -33,6 +33,7 @@ class SendWelcomeMail:
             print(f"Error sending welcome email: {str(e)}")
 
 class UserAccounts(Resource):
+    @jwt_required()
     def get(self):
         # Retrieve all users from the database and convert them to dictionary format
         users = [user.to_dict() for user in Users.query.all()]
@@ -119,6 +120,7 @@ class Login(Resource):
         },200
 
 class UserById(Resource):
+    @jwt_required()
     def get(self, id):
         found_user = Users.query.filter(Users.id == id).first()
         
@@ -128,7 +130,7 @@ class UserById(Resource):
             },404
             
         return found_user.to_dict(), 200
-    
+    @jwt_required()
     def patch(self, id):
         found_user = Users.query.filter(Users.id == id).first()
         
@@ -161,7 +163,7 @@ class UserById(Resource):
             "message":"User edited successfully",
             "user":found_user.to_dict()
         }
-        
+    @jwt_required()        
     def delete(self, id):
         found_user = Users.query.filter(Users.id == id).first()
         
@@ -177,6 +179,7 @@ class UserById(Resource):
         },204
         
 class ChangePassword(Resource):
+    @jwt_required()
     def patch(self, id):
         parser = reqparse.RequestParser()
         

@@ -1,15 +1,18 @@
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource, reqparse
 from models import Partners
 from config import db
 
 # Define PartnerResource class to handle partner requests
 class PartnerResource(Resource):
+    @jwt_required()
     def get(self):
         partners = [partner.to_dict() for partner in Partners.query.all()]
         
         return partners
     
     # POST method to create a new partner
+    @jwt_required()
     def post(self):
         # Create a request parser to parse incoming data
         parser = reqparse.RequestParser()

@@ -3,12 +3,15 @@ from flask_sqlalchemy import SQLAlchemy
 from config import app, db
 from models import Products
 from flask_restful import Resource, reqparse
+from flask_jwt_extended import jwt_required
 
 class ProductResource(Resource):
+    @jwt_required()
     def get(self):
         products = [product.to_dict() for product in Products.query.all()]
         return products,200
     
+    @jwt_required()
     def post(self):
         parser = reqparse.RequestParser()
         
@@ -32,6 +35,7 @@ class ProductResource(Resource):
         }
         
 class ProductResourceById(Resource):
+    @jwt_required()
     def get(self, id):
         found_product = Products.query.filter(Products.id == id).first()
         
@@ -42,6 +46,7 @@ class ProductResourceById(Resource):
             
         return found_product.to_dict(),200
     
+    @jwt_required()    
     def delete(self, id):
         found_product = Products.query.filter(Products.id == id).first()
         
@@ -57,6 +62,7 @@ class ProductResourceById(Resource):
             "message":"Product deleted successfully"
         },204
         
+    @jwt_required()    
     def patch(self, id):
         found_product = Products.query.filter(Products.id == id).first()
         

@@ -1,13 +1,16 @@
 from flask import request, jsonify
+from flask_jwt_extended import jwt_required
 from config import app, db
 from models import Products, Reviews
 from flask_restful import Resource, reqparse
 
 class ReviewsResource(Resource):
+    @jwt_required()
     def get(self):
         reviews = [review.to_dict() for review in Reviews.query.all()]
         return reviews
     
+    @jwt_required()
     def post(self):
         parser = reqparse.RequestParser()
         
@@ -25,46 +28,3 @@ class ReviewsResource(Resource):
         return {
             "message":"Review posted successfully"
         }
-
-
-# @app.route('/products/<int:product_id>/reviews', methods=['GET'])
-# def get_reviews(product_id):
-#     reviews = Reviews.query.filter_by(product_id=product_id).all()
-#     output = []
-#     for review in reviews:
-#         review_data = {
-#             'id': review.id,
-#             'product_id': review.product_id,
-#             'rating': review.rating,
-#             'comment': review.comment
-#         }
-#         output.append(review_data)
-#     return jsonify({'reviews': output})
-
-# @app.route('/products/<int:product_id>/reviews', methods=['POST'])
-# def add_review(product_id):
-#     data = request.json
-#     new_review = Reviews(
-#         product_id=product_id,
-#         rating=data['rating'],
-#         comment=data['comment']
-#     )
-#     db.session.add(new_review)
-#     db.session.commit()
-#     return jsonify({'message': 'Review added successfully'})
-
-# @app.route('/products/<int:product_id>/reviews/<int:review_id>', methods=['PUT'])
-# def update_review(product_id, review_id):
-#     review = Reviews.query.filter_by(product_id=product_id, id=review_id).first_or_404()
-#     data = request.json
-#     review.rating = data['rating']
-#     review.comment = data['comment']
-#     db.session.commit()
-#     return jsonify({'message': 'Review updated successfully'})
-
-# @app.route('/products/<int:product_id>/reviews/<int:review_id>', methods=['DELETE'])
-# def delete_review(product_id, review_id):
-#     review = Reviews.query.filter_by(product_id=product_id, id=review_id).first_or_404()
-#     db.session.delete(review)
-#     db.session.commit()
-#     return jsonify({'message': 'Review deleted successfully'})

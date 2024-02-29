@@ -1,4 +1,5 @@
 # Import necessary modules
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource, reqparse,fields
 from models import db, CarbonFootPrintCount
 
@@ -19,27 +20,10 @@ class CarbonFootprintCalculation(Resource):
     carbon_footprint_parser.add_argument('carbon_value', type=str, required=True, help='Carbon value is required')
 
     # Define a post method to handle POST requests
+    @jwt_required()
     def post(self):
         # Parse the arguments from the request
         args = self.carbon_footprint_parser.parse_args()
-
- # Electricity API request
-        data = {
-            "type": "electricity",
-            "electricity_unit": "kwh",
-            "electricity_value": 42,
-            }
-
-        headers = {
-            "Authorization": "SMWB0P4sDjqKPPghPANKg",
-            "Content-Type": "application/json"
-        }
-        response = requests.post("https://www.carboninterface.com/api/v1/estimates", json=data, headers=headers)
-
-        # Check if the request was successful
-        if response.status_code == 200:
-            # Extract carbon footprint data from the response
-            carbon_data = response.json()
 
         # Create a new instance of CarbonFootPrintCountModel with parsed arguments
         new_footprint = CarbonFootPrintCount(
@@ -72,6 +56,7 @@ class CarbonFootprintCalculationById(Resource):
     carbon_footprint_parser.add_argument('carbon_value', type=str, required=True, help='Carbon value is required')
 
     # Define a get method to handle GET requests for retrieving a specific footprint
+    @jwt_required()
     def get(self, footprint_id):
         # Retrieve the carbon footprint record from the database by its ID
         footprint = CarbonFootPrintCount.query.filter(CarbonFootPrintCount.id == footprint_id).first()
@@ -84,6 +69,7 @@ class CarbonFootprintCalculationById(Resource):
             return {'error': 'Carbon footprint count not found'}, 404
 
     # Define a put method to handle PUT requests for updating a specific footprint
+    @jwt_required()
     def put(self, footprint_id):
         # Parse the request arguments to extract user input
         args = self.carbon_footprint_parser.parse_args()
@@ -103,6 +89,7 @@ class CarbonFootprintCalculationById(Resource):
             return {'error': 'Carbon footprint count not found'}, 404
 
     # Define a delete method to handle DELETE requests for deleting a specific footprint
+    @jwt_required()
     def delete(self, footprint_id):
         # Retrieve the carbon footprint record from the database by its ID
         footprint = CarbonFootPrintCount.query.filter(CarbonFootPrintCount.id == footprint_id).first()

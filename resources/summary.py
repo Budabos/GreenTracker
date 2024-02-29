@@ -1,7 +1,9 @@
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 from models import Users, Products, Events, UserEvents
 
 class Summary(Resource):
+    @jwt_required()
     def get(self):
         num_of_users = Users.query.count()
         num_of_products = Products.query.count()

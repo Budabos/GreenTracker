@@ -1,3 +1,4 @@
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource,abort,fields,marshal_with, reqparse
 from models import Events, UserEvents
 from config import db
@@ -11,6 +12,7 @@ resource_fields = {
 
 class User_Event(Resource):
     #get list of all the events the user has particiated
+    @jwt_required()
     @marshal_with(resource_fields)
     def get(self, id=None):
         if id:
@@ -24,6 +26,7 @@ class User_Event(Resource):
 
             return events
         
+    @jwt_required()    
     def post(self):
         parser = reqparse.RequestParser()
         

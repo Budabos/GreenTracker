@@ -1,4 +1,5 @@
 # Import necessary modules
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource, reqparse, fields
 from models import db, Impact_Monitorings
 
@@ -18,11 +19,13 @@ class ImpactMonitorings(Resource):
     impact_monitorings_parser.add_argument("action_taken", type=str, required=True, help="Action taken is required")
     impact_monitorings_parser.add_argument("carbon_footprint", type=str, required=True, help="Carbon footprint is required")
     
+    @jwt_required()
     def get(self):
         impact_monitors = [impact.to_dict() for impact in Impact_Monitorings.query.all()]
         return impact_monitors, 200
     
     # POST method to handle creating new ImpactMonitorings instances
+    @jwt_required()
     def post(self):
         # Parse the arguments from the request
         args = self.impact_monitorings_parser.parse_args()
@@ -58,6 +61,7 @@ class ImpactMonitoringsById(Resource):
     impact_monitorings_parser.add_argument("carbon_footprint", type=str, required=True, help="Carbon footprint is required")
     
    # GET method to retrieve an ImpactMonitorings instance by ID
+    @jwt_required()
     def get(self, id):
         # Query the database for the ImpactMonitorings instance with the specified ID
         impact_monitoring = Impact_Monitorings.query.get(id)
@@ -70,6 +74,7 @@ class ImpactMonitoringsById(Resource):
             return {'error': 'Impact monitoring record not found'}, 404
 
     # PUT method to update an existing ImpactMonitorings instance
+    @jwt_required()
     def put(self, id):
         # Parse the arguments from the request
         args = self.impact_monitorings_parser.parse_args()
@@ -99,6 +104,7 @@ class ImpactMonitoringsById(Resource):
             return {'error': 'Impact monitoring record not found'}, 404
 
     # DELETE method to delete an existing ImpactMonitorings instance
+    @jwt_required()
     def delete(self, id):
         # Query the database for the ImpactMonitorings instance with the specified ID
         impact_monitoring = Impact_Monitorings.query.get(id)

@@ -1,4 +1,5 @@
 from flask import request
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource, reqparse
 from models import db, Events
 
@@ -28,6 +29,7 @@ class EventsResource(Resource):
     parser.add_argument('contact_info', type=str, required=True, help='Contact info is required')
     parser.add_argument('registration_deadline', required=True, help='Registration deadline is required')
         
+    @jwt_required()    
     def get(self):
         # Retrieve all events from the database
         events = Events.query.all()
@@ -38,6 +40,7 @@ class EventsResource(Resource):
         return serialized_events, 200
 
     # POST method to create a new event
+    @jwt_required()
     def post(self):
         # Parse request data as JSON
         data = self.parser.parse_args()
@@ -56,6 +59,7 @@ class EventsResource(Resource):
     
 class EventsResourceById(Resource):
    # PATCH method to update an existing event
+    @jwt_required()
     def patch(self, event_id):
         # Retrieve the event object from the database or return 404 if not found
         event = Events.query.get_or_404(event_id)
@@ -79,6 +83,7 @@ class EventsResourceById(Resource):
 
 
     # DELETE method to delete an existing event
+    @jwt_required()
     def delete(self, event_id):
         # Retrieve the event object from the database or return 404 if not found
         event = Events.query.get_or_404(event_id)
