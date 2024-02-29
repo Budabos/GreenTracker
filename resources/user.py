@@ -96,6 +96,11 @@ class Login(Resource):
         args = parser.parse_args()
         
         found_user = Users.query.filter(Users.email == args['email']).first()
+        
+        if found_user.account_status == 'suspended':
+            return {
+                "message":"The following account is suspended"
+            }, 401
 
         if not found_user or not check_password_hash(found_user.password, args['password']):
             return {
@@ -132,7 +137,7 @@ class UserById(Resource):
                 "message":"User not found"
             },404
             
-        if request.json['phone'] or request.json['email']:
+        if request.json.get('phone') or request.json.get('email'):
             found_phone = Users.query.filter(Users.id != found_user.id).filter(Users.phone == request.json['phone']).first()
             found_email = Users.query.filter(Users.id != found_user.id).filter(Users.email == request.json['email']).first()
             
