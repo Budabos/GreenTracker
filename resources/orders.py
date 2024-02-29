@@ -1,6 +1,6 @@
 from flask import request
 from flask_restful import Resource, reqparse
-from models import OrderProduct, Products, Order
+from models import OrderProduct, Products, Order, Users
 from config import db
 
 class Orders(Resource):
@@ -22,6 +22,8 @@ class Orders(Resource):
         db.session.add(order)
         db.session.commit()
         
+        found_user = Users.query.filter(Users.id == args['user_id']).first()
+        
         for product_id, quantity in zip(product_ids, quantities):
             found_product = Products.query.filter(Products.id == product_id).first()
             print(found_product)
@@ -39,5 +41,6 @@ class Orders(Resource):
         db.session.commit()
             
         return {
-            "message":"Order made successfully"
+            "message":"Order made successfully",
+            "updated_user":found_user.to_dict()
         }, 200

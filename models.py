@@ -208,6 +208,7 @@ class Users(db.Model, SerializerMixin):
     phone=db.Column(db.String, nullable=False, unique=True)
     password=db.Column(db.String, nullable=False)
     gender=db.Column(db.String, nullable=False)
+    account_status=db.Column(db.String, nullable=False, server_default='active')
         
     role = db.Column(db.String, nullable=False)
     interests = db.Column(db.String, nullable=False)
