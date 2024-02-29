@@ -1,5 +1,5 @@
 from flask_restful import Resource,abort,fields,marshal_with, reqparse
-from models import UserEvents
+from models import Events, UserEvents
 from config import db
 
 resource_fields = {
@@ -33,12 +33,13 @@ class User_Event(Resource):
         args = parser.parse_args()
         
         new_user_event = UserEvents(**args)
+        found_event = Events.query.filter(Events.id == args['event_id']).first()
         
         db.session.add(new_user_event)
         db.session.commit()
         
         return {
             "message":"Booking successful",
-            "user_event":new_user_event.to_dict()
+            "user_event":new_user_event.to_dict(),
         },201
         
