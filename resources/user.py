@@ -213,7 +213,7 @@ class ChangePassword(Resource):
 class ForgotPassword(Resource):
     def post(self):
         front_url = os.getenv('FRONTEND_URL')
-        url = f'{front_url}/reset' if front_url else 'http://localhost:4000/reset/'
+        url = f'{front_url}/reset/' if front_url else 'http://localhost:4000/reset/'
         
         data = request.get_json()
         email = data['email']
