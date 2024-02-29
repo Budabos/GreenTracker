@@ -1,3 +1,4 @@
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource, reqparse
 from models import Education_Resources
 from config import db
@@ -5,6 +6,7 @@ from flask import request
 
 class EduResource(Resource):
     # GET method to fetch all education resources
+    @jwt_required()
     def get(self):
         # Retrieve all education resources from the database and convert them to dictionaries
         resources = [rec.to_dict() for rec in Education_Resources.query.all()]
@@ -13,6 +15,7 @@ class EduResource(Resource):
         return resources,200
     
     # POST method to create a new education resource
+    @jwt_required()
     def post(self):
         # Create a request parser to parse incoming data
         parser = reqparse.RequestParser()
@@ -42,6 +45,7 @@ class EduResource(Resource):
         }, 201
         
 class EduResourceById(Resource):
+    @jwt_required()
     def get(self, id):
         found_resource = Education_Resources.query.filter(Education_Resources.id == id).first()
         
@@ -52,6 +56,7 @@ class EduResourceById(Resource):
             
         return found_resource.to_dict(),200
     
+    @jwt_required()
     def patch(self, id):
         found_resource = Education_Resources.query.filter(Education_Resources.id == id).first()
         
@@ -82,7 +87,7 @@ class EduResourceById(Resource):
                 "error": str(e)
             }, 500
     
-        
+    @jwt_required()        
     def delete(self, id):
         found_resource = Education_Resources.query.filter(Education_Resources.id == id).first()
         

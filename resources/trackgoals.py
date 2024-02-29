@@ -1,3 +1,4 @@
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource, fields, marshal, reqparse 
 from models import TrackGoals
 from config import db
@@ -40,6 +41,7 @@ class TrackGoalsResource(Resource):
 
 
     # GET method to fetch track goals by ID or all track goals
+    @jwt_required()
     def get(self, id=None):
         if id:
             # Fetch a specific track goal by ID
@@ -56,7 +58,8 @@ class TrackGoalsResource(Resource):
             else:
                 return {'message': 'No track goals found'}, 404
 
-     # POST method to create a new track goal       
+     # POST method to create a new track goal    
+    @jwt_required()   
     def post(self):
         # Parse incoming data
         data= self.profile_parser.parse_args()
@@ -73,6 +76,7 @@ class TrackGoalsResource(Resource):
             return {"message":"Goal not created"},500
 
     # PATCH method to update an existing track goal
+    @jwt_required()
     def patch(self, id):
         # Parse incoming data
         data= TrackGoalsResource.parser_args()
@@ -93,6 +97,7 @@ class TrackGoalsResource(Resource):
                 return {"message":"Goal not updated"},500
 
     # DELETE method to delete an existing track goal
+    @jwt_required()
     def delete(self, id):
         # Fetch the goal to be deleted from the database
         goal = TrackGoals.query.get(id)

@@ -1,3 +1,4 @@
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource, fields, reqparse 
 from models import Donations
 from config import db
@@ -22,6 +23,7 @@ class DonationsResource(Resource):
     profile_parser.add_argument("purpose", type=str, required=True, help="Purpose is required")
     profile_parser.add_argument("user_id", type=int, required=True, help="User ID is required")
     
+    @jwt_required()
     def get(self):
         #Loop over donations in db
         donations = [donation.to_dict() for donation in Donations.query.all()]
@@ -30,6 +32,7 @@ class DonationsResource(Resource):
         return donations, 200
 
     # Handle POST requests
+    @jwt_required()
     def post(self):
         # Parse request data
         data= self.profile_parser.parse_args()

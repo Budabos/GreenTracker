@@ -1,3 +1,4 @@
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource,reqparse,abort,fields,marshal_with
 from models import FeedbackForm
 from config import db
@@ -28,6 +29,7 @@ class Feedback(Resource):
         except:
             abort(500, error="Creation unsuccessful")
 
+    @jwt_required()
     def get(self, id=None):
         if id:
             feedback = FeedbackForm.query.filter(FeedbackForm.id == id).first()
