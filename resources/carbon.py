@@ -20,6 +20,17 @@ class CarbonFootprintCalculation(Resource):
     carbon_footprint_parser.add_argument('carbon_value', type=str, required=True, help='Carbon value is required')
 
     # Define a post method to handle POST requests
+    
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('user_id', type=int, required=True, help='User ID is required')
+        
+        args = parser.parse_args()
+        
+        carbon_footprints = CarbonFootPrintCount.query.filter(CarbonFootPrintCount.user_id == args['user_id']).all()
+        
+        return [carbon.to_dict() for carbon in carbon_footprints],200
+    
     @jwt_required()
     def post(self):
         # Parse the arguments from the request
@@ -58,6 +69,7 @@ class CarbonFootprintCalculationById(Resource):
     # Define a get method to handle GET requests for retrieving a specific footprint
     @jwt_required()
     def get(self, footprint_id):
+        
         # Retrieve the carbon footprint record from the database by its ID
         footprint = CarbonFootPrintCount.query.filter(CarbonFootPrintCount.id == footprint_id).first()
         
@@ -69,6 +81,7 @@ class CarbonFootprintCalculationById(Resource):
             return {'error': 'Carbon footprint count not found'}, 404
 
     # Define a put method to handle PUT requests for updating a specific footprint
+    
     @jwt_required()
     def put(self, footprint_id):
         # Parse the request arguments to extract user input
@@ -103,3 +116,10 @@ class CarbonFootprintCalculationById(Resource):
         else:
             # If the footprint does not exist, return an error message with status code 404
             return {'error': 'Carbon footprint count not found'}, 404
+        
+class CalculationResourceByUser(Resource):
+    # Retrieve the carbon footprint record from the database by its ID
+    def get(self, user_id):
+        footprints = CarbonFootPrintCount.query.filter(CarbonFootPrintCount.user_id == user_id).all()
+
+        return [carbon.to_dict() for carbon in footprints],200

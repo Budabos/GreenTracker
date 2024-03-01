@@ -75,10 +75,13 @@ class SignUp(Resource):
 
         # Send welcome email using the SendWelcomeMail class
         SendWelcomeMail.send(args['email'], args['first_name'])
+        
+        expires = datetime.timedelta(hours=24)
 
         # Generate token and return user dict
-        access_token = create_access_token(identity=new_user.id)
+        access_token = create_access_token(identity=new_user.id, expires_delta=expires)
         refresh_token = create_refresh_token(identity=new_user.id)
+        
 
         return {
             "message": "User created successfully",
@@ -108,8 +111,10 @@ class Login(Resource):
                 "message":"Invalid credentials"
             },401
             
+        expires = datetime.timedelta(hours=24)    
+            
         #Generate token and return user dict
-        access_token = create_access_token(identity=found_user.id)
+        access_token = create_access_token(identity=found_user.id, expires_delta=expires)
         refresh_token = create_refresh_token(identity=found_user.id)
             
         return {
